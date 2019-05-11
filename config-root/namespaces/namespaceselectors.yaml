@@ -1,0 +1,18 @@
+kind: NamespaceSelector
+apiVersion: configmanagement.gke.io/v1
+metadata:
+  name: prod-selector
+spec:
+  selector:
+    matchExpressions:
+      - {key: environment, operator: In, values: [production]}
+---
+kind: NamespaceSelector
+apiVersion: configmanagement.gke.io/v1
+metadata:
+  name: nonprod-selector
+spec:
+  selector:
+    matchExpressions:
+      - {key: environment, operator: NotIn, values: [production]}
+

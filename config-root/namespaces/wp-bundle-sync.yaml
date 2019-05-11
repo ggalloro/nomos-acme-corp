@@ -102,6 +102,52 @@ spec:
 apiVersion: apps/v1 
 kind: Deployment
 metadata:
+  name: prod-wordpress
+  labels:
+    app: prod-wordpress
+  annotations:
+    configmanagement.gke.io/namespace-selector: prod-selector
+spec:
+  selector:
+    matchLabels:
+      app: wordpress
+      tier: frontend
+  replicas: 2
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: prod-wordpress
+        tier: frontend
+    spec:
+      containers:
+      - image: wordpress:4.8-apache
+        name: prodwordpress
+        env:
+        - name: WORDPRESS_DB_HOST
+          value: wordpress-mysql
+        - name: WORDPRESS_DB_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              name: wp-config
+              key: MYSQL_ROOT_PASSWORD
+        ports:
+        - containerPort: 80
+          name: wordpress
+        volumeMounts:
+        - name: wordpress-persistent-storage
+          mountPath: /var/www/html
+      volumes:
+      - name: wordpress-persistent-storage
+        persistentVolumeClaim:
+          claimName: wp-pv-claim
+---
+apiVersion: apps/v1 
+kind: Deployment
+metadata:
+  annotations:
+    configmanagement.gke.io/namespace-selector: nonprod-selector
   name: wordpress
   labels:
     app: wordpress

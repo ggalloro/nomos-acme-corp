@@ -4,8 +4,8 @@ metadata:
   name: config-management
   namespace: config-management-system
 spec:
-  clusterName: my-cluster
+  clusterName: nomos
   git:
-    syncRepo: git@github.com:linde/nomos-acme-corp.git
+    syncRepo: git@github.com:ggalloro/nomos-acme-corp.git
     secretType: ssh
-    policyDir: "nomos-root"
+    policyDir: "config-root"
