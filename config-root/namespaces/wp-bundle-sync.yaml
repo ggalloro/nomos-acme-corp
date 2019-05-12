@@ -79,11 +79,28 @@ metadata:
   name: wordpress
   labels:
     app: wordpress
+  annotations:
+    configmanagement.gke.io/namespace-selector: nonprod-selector
 spec:
   ports:
     - port: 80
   selector:
     app: wordpress
+    tier: frontend
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prod-wordpress
+  labels:
+    app: prod-wordpress
+  annotations:
+    configmanagement.gke.io/namespace-selector: prod-selector
+spec:
+  ports:
+    - port: 80
+  selector:
+    app: prod-wordpress
     tier: frontend
 ---
 apiVersion: v1
@@ -110,7 +127,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: wordpress
+      app: prod-wordpress
       tier: frontend
   replicas: 2
   strategy:
